@@ -1,9 +1,12 @@
 // components/ProductDetails/ProductDetails.jsx
 import { Link, useLoaderData } from "react-router";
 import { IoArrowBack } from "react-icons/io5";
+import { useState } from "react";
+import BidModal from "../BidModal/BidModal";
 
 const ProductDetails = () => {
   const product = useLoaderData();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     _id,
@@ -23,6 +26,9 @@ const ProductDetails = () => {
     status,
     seller_image,
   } = product;
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -138,12 +144,24 @@ const ProductDetails = () => {
             </div>
 
             {/* Buy Button */}
-            <button className="btn btn-lg w-full bg-purple-600 hover:bg-purple-700 text-white border-none text-xl font-semibold rounded-lg h-16">
+            <button
+              onClick={openModal}
+              className="btn btn-lg w-full bg-purple-600 hover:bg-purple-700 text-white border-none text-xl font-semibold rounded-lg h-16"
+            >
               I Want Buy This Product
             </button>
           </div>
         </div>
       </div>
+
+      {/* Bid Modal */}
+      <BidModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        productId={_id}
+        productTitle={title}
+        status={status}
+      />
     </div>
   );
 };
