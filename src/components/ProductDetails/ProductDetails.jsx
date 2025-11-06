@@ -1,12 +1,14 @@
 // components/ProductDetails/ProductDetails.jsx
 import { Link, useLoaderData } from "react-router";
 import { IoArrowBack } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BidModal from "../BidModal/BidModal";
+import BidsTable from "../BidsTable/BidsTable";
 
 const ProductDetails = () => {
   const product = useLoaderData();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bids, setBids] = useState([]);
 
   const {
     _id,
@@ -29,6 +31,15 @@ const ProductDetails = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/products/bids/${_id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setBids(data);
+      });
+  }, [_id]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -152,6 +163,9 @@ const ProductDetails = () => {
             </button>
           </div>
         </div>
+
+        {/* Bids Table - Added at the bottom */}
+        {bids && bids.length > 0 && <BidsTable bids={bids} productTitle={title} image={image} />}
       </div>
 
       {/* Bid Modal */}
@@ -161,6 +175,7 @@ const ProductDetails = () => {
         productId={_id}
         productTitle={title}
         status={status}
+        image={image}
       />
     </div>
   );
