@@ -8,6 +8,13 @@
   --color-primary: #9f62f2;
   --color-secondary: teal;
 }
+.btn-primary {
+  @apply bg-gradient-to-r from-[#632EE3] to-[#9f62f2] text-white;
+}
+
+.btn-primary {
+  @apply opacity-90;
+}
 
 * {
   font-family: "Inter", sans-serif;

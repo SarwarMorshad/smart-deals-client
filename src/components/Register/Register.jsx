@@ -11,6 +11,23 @@ const Register = () => {
       .then((result) => {
         const user = result.user;
         console.log("User signed in with Google:", user);
+        // create user in database
+        const newUser = {
+          name: user.displayName,
+          email: user.email,
+          imageURL: user.photoURL,
+        };
+        fetch("http://localhost:3000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("User Saved in DB", data);
+          });
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
@@ -90,7 +107,7 @@ const Register = () => {
             <div className="form-control mt-8">
               <button
                 type="submit"
-                className="btn btn-lg bg-purple-600 hover:bg-purple-700 text-white border-none text-xl font-semibold rounded-lg h-16 w-full"
+                className="btn btn-lg btn-primary border-none text-xl font-semibold rounded-lg h-16 w-full"
               >
                 Register
               </button>
