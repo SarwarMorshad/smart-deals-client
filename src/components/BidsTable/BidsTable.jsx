@@ -1,5 +1,5 @@
 // components/BidsTable/BidsTable.jsx
-const BidsTable = ({ bids }) => {
+const BidsTable = ({ bids, image }) => {
   const handleAcceptOffer = (bidId) => {
     console.log("Accept offer:", bidId);
   };
@@ -45,7 +45,7 @@ const BidsTable = ({ bids }) => {
                     <div className="avatar">
                       <div className="w-12 h-12 rounded bg-gray-300">
                         <img
-                          src={bid.image || "https://via.placeholder.com/150"}
+                          src={image || "https://via.placeholder.com/150"}
                           alt={bid.productTitle}
                           className="w-full h-full object-cover"
                         />

@@ -29,17 +29,32 @@ const ProductDetails = () => {
     seller_image,
   } = product;
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  // Function to fetch bids
+  const fetchBids = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/products/bids/${_id}`);
+      const data = await response.json();
+      console.log("Fetched bids:", data);
+      setBids(data);
+    } catch (error) {
+      console.error("Error fetching bids:", error);
+    }
+  };
 
+  // Fetch bids on component mount
   useEffect(() => {
-    fetch(`http://localhost:3000/products/bids/${_id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setBids(data);
-      });
+    fetchBids();
   }, [_id]);
+
+  const openModal = () => setIsModalOpen(true);
+
+  const closeModal = async () => {
+    setIsModalOpen(false);
+    // Add a small delay to ensure database is updated
+    setTimeout(() => {
+      fetchBids();
+    }, 500);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -164,8 +179,8 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Bids Table - Added at the bottom */}
-        {bids && bids.length > 0 && <BidsTable bids={bids} productTitle={title} image={image} />}
+        {/* Bids Table */}
+        {bids && bids.length > 0 && <BidsTable bids={bids} image={image} />}
       </div>
 
       {/* Bid Modal */}
@@ -174,8 +189,8 @@ const ProductDetails = () => {
         onClose={closeModal}
         productId={_id}
         productTitle={title}
+        productImage={image}
         status={status}
-        image={image}
       />
     </div>
   );
