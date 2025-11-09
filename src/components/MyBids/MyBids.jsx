@@ -12,6 +12,7 @@ const MyBids = () => {
     }
   }, [user?.email]);
 
+  // components/MyBids/MyBids.jsx
   const fetchBidsWithSellerInfo = async () => {
     try {
       // Fetch user's bids
@@ -27,6 +28,7 @@ const MyBids = () => {
 
             return {
               ...bid,
+              image: bid.image || productData.image, // Use bid image or fallback to product image
               seller_name: productData.seller_name,
               seller_email: productData.email,
               seller_image: productData.seller_image,
@@ -39,6 +41,7 @@ const MyBids = () => {
         })
       );
 
+      console.log("Bids with seller info:", bidsWithSeller); // Debug log
       setMyBids(bidsWithSeller);
       setLoading(false);
     } catch (error) {
