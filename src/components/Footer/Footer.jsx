@@ -1,5 +1,5 @@
 // components/Footer/Footer.jsx
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { HiMail, HiPhone, HiLocationMarker } from "react-icons/hi";
@@ -106,18 +106,36 @@ const Footer = () => {
             <div className="mt-6">
               <h4 className="text-lg font-semibold text-white mb-3">Social Links</h4>
               <div className="flex gap-3">
-                href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10
-                rounded-full bg-slate-700 hover:bg-purple-600 flex items-center justify-center
-                transition-colors"
-                <a>
-                  <a>
-                    <FaXTwitter className="text-white text-lg" />
-                  </a>
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-slate-700 hover:bg-purple-600 flex items-center justify-center transition-colors"
+                >
+                  <FaXTwitter className="text-white text-lg" />
                 </a>
-                href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10
-                rounded-full bg-slate-700 hover:bg-purple-600 flex items-center justify-center
-                transition-colors"
-                <a>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-slate-700 hover:bg-purple-600 flex items-center justify-center transition-colors"
+                >
+                  <FaLinkedinIn className="text-white text-lg" />
+                </a>
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-slate-700 hover:bg-purple-600 flex items-center justify-center transition-colors"
+                >
+                  <FaFacebookF className="text-white text-lg" />
+                </a>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-slate-700 hover:bg-purple-600 flex items-center justify-center transition-colors"
+                >
                   <FaLinkedinIn className="text-white text-lg" />
                 </a>
                 <a
