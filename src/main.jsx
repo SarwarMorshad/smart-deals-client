@@ -12,6 +12,7 @@ import Register from "./components/Register/Register.jsx";
 import MyProducts from "./components/MyProducts/MyProducts.jsx";
 import MyBids from "./components/MyBids/MyBids.jsx";
 import ProductDetails from "./components/ProductDetails/ProductDetails.jsx";
+import PrivateRoute from "./routes/PrivateRoutes.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,16 +34,28 @@ const router = createBrowserRouter([
       },
       {
         path: "myProducts",
-        element: <MyProducts></MyProducts>,
+        element: (
+          <PrivateRoute>
+            <MyProducts></MyProducts>
+          </PrivateRoute>
+        ),
       },
       {
         path: "myBids",
-        element: <MyBids></MyBids>,
+        element: (
+          <PrivateRoute>
+            <MyBids></MyBids>
+          </PrivateRoute>
+        ),
       },
       {
         path: "productDetails/:id",
         loader: async ({ params }) => await fetch(`http://localhost:3000/products/${params.id}`),
-        element: <ProductDetails></ProductDetails>,
+        element: (
+          <PrivateRoute>
+            <ProductDetails></ProductDetails>
+          </PrivateRoute>
+        ),
       },
     ],
   },

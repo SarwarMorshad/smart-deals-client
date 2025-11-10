@@ -1,22 +1,29 @@
+// components/MyBids/MyBids.jsx
 import { use, useEffect, useState } from "react";
 import AuthContext from "../../context/AuthContext";
+import Swal from "sweetalert2";
 
 const MyBids = () => {
   const { user } = use(AuthContext);
   const [myBids, setMyBids] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // console.log(user.accessToken);
+
   useEffect(() => {
     if (user?.email) {
       fetchBidsWithSellerInfo();
     }
-  }, [user?.email]);
+  }, [user]);
 
-  // components/MyBids/MyBids.jsx
   const fetchBidsWithSellerInfo = async () => {
     try {
       // Fetch user's bids
-      const bidsResponse = await fetch(`http://localhost:3000/users/bids/${user.email}`);
+      const bidsResponse = await fetch(`http://localhost:3000/users/bids/${user.email}`, {
+        headers: {
+          authorization: `Bearer ${user.accessToken}`,
+        },
+      });
       const bidsData = await bidsResponse.json();
 
       // Fetch seller info for each bid
@@ -28,7 +35,7 @@ const MyBids = () => {
 
             return {
               ...bid,
-              image: bid.image || productData.image, // Use bid image or fallback to product image
+              image: bid.image || productData.image,
               seller_name: productData.seller_name,
               seller_email: productData.email,
               seller_image: productData.seller_image,
@@ -36,12 +43,11 @@ const MyBids = () => {
             };
           } catch (error) {
             console.error(`Error fetching product ${bid.product}:`, error);
-            return bid; // Return original bid if product fetch fails
+            return bid;
           }
         })
       );
 
-      console.log("Bids with seller info:", bidsWithSeller); // Debug log
       setMyBids(bidsWithSeller);
       setLoading(false);
     } catch (error) {
@@ -50,23 +56,63 @@ const MyBids = () => {
     }
   };
 
-  const handleRemoveBid = (bidId) => {
-    if (window.confirm("Are you sure you want to remove this bid?")) {
-      fetch(`http://localhost:3000/bids/${bidId}`, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.deletedCount > 0) {
-            setMyBids(myBids.filter((bid) => bid._id !== bidId));
-            alert("Bid removed successfully!");
-          }
-        })
-        .catch((error) => {
-          console.error("Error removing bid:", error);
-          alert("Failed to remove bid");
+  const handleRemoveBid = (bidId, productTitle) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to remove your bid for "${productTitle}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ea580c",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, remove it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Show loading
+        Swal.fire({
+          title: "Removing bid...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
         });
-    }
+
+        // Delete the bid
+        fetch(`http://localhost:3000/bids/${bidId}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.deletedCount > 0) {
+              // Remove bid from state
+              setMyBids(myBids.filter((bid) => bid._id !== bidId));
+
+              // Show success message
+              Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: "Bid removed successfully!",
+                showConfirmButton: false,
+                timer: 2000,
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Failed to remove bid",
+                text: "Please try again",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error removing bid:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error!",
+              text: "Failed to remove bid. Please try again.",
+            });
+          });
+      }
+    });
   };
 
   if (loading) {
@@ -144,10 +190,8 @@ const MyBids = () => {
                           </div>
                         </div>
                         <div>
-                          <div className="font-medium text-gray-800">{bid.seller_name || "Sara Chen"}</div>
-                          <div className="text-sm text-gray-600">
-                            {bid.seller_email || "crafts.by.sara@shop.net"}
-                          </div>
+                          <div className="font-medium text-gray-800">{bid.seller_name}</div>
+                          <div className="text-sm text-gray-600">{bid.seller_email}</div>
                         </div>
                       </div>
                     </td>
@@ -167,7 +211,7 @@ const MyBids = () => {
                     {/* Actions */}
                     <td className="py-4 px-6">
                       <button
-                        onClick={() => handleRemoveBid(bid._id)}
+                        onClick={() => handleRemoveBid(bid._id, bid.productTitle)}
                         className="btn btn-sm btn-outline text-orange-600 hover:bg-orange-600 hover:text-white border-orange-600"
                       >
                         Remove Bid

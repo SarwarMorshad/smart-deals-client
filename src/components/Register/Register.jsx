@@ -1,16 +1,18 @@
 import { use } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import AuthContext from "../../context/AuthContext";
 
 const Register = () => {
   const { signInWithGoogle } = use(AuthContext);
+  const navigate = useNavigate();
 
   const handleGoogleSignIn = () => {
     signInWithGoogle()
       .then((result) => {
         const user = result.user;
         console.log("User signed in with Google:", user);
+        navigate("/");
         // create user in database
         const newUser = {
           name: user.displayName,
