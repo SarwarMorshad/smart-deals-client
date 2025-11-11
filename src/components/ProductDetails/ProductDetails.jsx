@@ -1,14 +1,16 @@
 // components/ProductDetails/ProductDetails.jsx
 import { Link, useLoaderData } from "react-router";
 import { IoArrowBack } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import BidModal from "../BidModal/BidModal";
 import BidsTable from "../BidsTable/BidsTable";
+import AuthContext from "../../context/AuthContext";
 
 const ProductDetails = () => {
   const product = useLoaderData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bids, setBids] = useState([]);
+  const { user } = use(AuthContext);
 
   const {
     _id,
@@ -32,7 +34,11 @@ const ProductDetails = () => {
   // Function to fetch bids
   const fetchBids = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/products/bids/${_id}`);
+      const response = await fetch(`http://localhost:3000/products/bids/${_id}`, {
+        headers: {
+          authorization: `Bearer ${user.accessToken}`,
+        },
+      });
       const data = await response.json();
       console.log("Fetched bids:", data);
       setBids(data);
@@ -44,7 +50,7 @@ const ProductDetails = () => {
   // Fetch bids on component mount
   useEffect(() => {
     fetchBids();
-  }, [_id]);
+  }, [_id, user]);
 
   const openModal = () => setIsModalOpen(true);
 
